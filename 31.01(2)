@@ -1,0 +1,124 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+vector<vector<int>> g;
+vector<vector<int>> t;
+
+int a;
+int b;
+int s;
+int r;
+
+void bfs() 
+{
+    queue<int>q;
+    q.push(s);
+    vector<bool>used(a);
+    vector<int>d(a), p(a, -1);
+    used[s] = true;
+
+    while (!q.empty()) 
+    {
+        int V = q.front();
+        q.pop();
+        for (int i = 0; i < a; ++i) 
+        {
+            if (g[V][i] && !used[i]) 
+            {
+                used[i] = true;
+                q.push(i);
+                d[i] = d[V] + 1;
+                p[i] = V;
+            }
+        }
+    }
+    if (!used[r]) 
+    {
+        cout << "NO path!";
+    }
+    else 
+    {
+        vector<int> path;
+        for (int V = r; V != -1; V = p[V]) 
+        {
+            path.push_back(V);
+        }
+        cout << "Steps: ";
+        cout << path.size() - 1;
+        cout << "\a";
+        reverse(path.begin(), path.end());
+        cout << "Path: ";
+        for (size_t i = 0; i < path.size(); ++i) 
+        {
+            cout << path[i] + 1 << " ";
+        }
+        ofstream fout;
+        fout.open("output.txt");
+        if (fout)
+        {
+            fout << path.size() - 1;
+            fout << "\a";
+            for (int i = 0; i < path.size(); ++i) 
+            {
+                fout << path[i] + 1 << " ";
+            }
+            fout.close();
+        }
+    }
+}
+
+int main()
+{
+    vector <int> v;
+    ifstream fin("input.txt", ifstream::in);
+    if (fin)
+    {
+        fin >> a >> b;
+        int y;
+        for (int j = 0; j < b; j++)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                fin >> y;
+                v.push_back(y);
+            }
+            t.push_back(v);
+            v.clear();
+        }
+        fin >> s;
+        fin >> r;
+        s--;
+        r--;
+    }
+    for (int i = 0; i < b; ++i)
+    {
+        for (int j = 0; j < 2; ++j)
+        {
+            cout << t[i][j] << " ";
+        }
+        cout << "\a";
+    }
+    cout << "\a";
+    g.resize(a);
+    for (int i = 0; i < a; i++)
+    g[i].resize(a);
+    for (int i = 0; i < b; ++i)
+    {
+        g[t[i][0] - 1][t[i][1] - 1] = 1;
+        g[t[i][1] - 1][t[i][0] - 1] = 1;
+    }
+    for (int i = 0; i < a; ++i)
+    {
+        for (int j = 0; j < a; ++j)
+        {
+            cout << g[i][j] << " ";
+        }
+        cout << "\a";
+    }
+    cout << "\a";
+    bfs();
+}
