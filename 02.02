@@ -1,0 +1,13 @@
+#dfs обход в глубину, v - вершина, g - граф, used - посещенные вершины, n - число вершин
+def dfs(v, g, used):
+    used.add(v)
+    for next in g[v]:
+        if next not in used:
+            dfs(next, g, used)
+    used = {}
+    n = 0
+    for v in g:
+        if v not in used:
+            dfs(v, g, used)
+            n += 1
+    print(n)
